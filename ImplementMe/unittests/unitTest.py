@@ -9,9 +9,11 @@ if sys.version_info[0] < 3:
 else:
     from io import StringIO
 
-from ..main.inheritance_and_exception_handling import Calculator, Rectangle, Curves, Linear, Bilinear
-from ..main.DataFrame_and_requests import DataFrame_Excersises
-from ..main.functional_programming import Functional_Programming
+from ImplementMe.main.inheritance_and_exception_handling import Calculator, Rectangle, Curves, Linear, Bilinear
+from ImplementMe.main.DataFrame_and_requests import DataFrame_Excersises
+from ImplementMe.main.functional_programming import Functional_Programming
+
+
 class CalculatorTest(unittest.TestCase):
     def test_add_one(self):
         calculator: Calculator = Calculator()
@@ -29,13 +31,56 @@ class CalculatorTest(unittest.TestCase):
         rectangle: Rectangle = Rectangle(-1, 12)
         with self.assertRaises(ValueError):
             rectangle.calculate_area()
-    def test_Curves_inheritance(self):
-        curves: Curves = Curves(1,2,3)
-        self.assertEqual(Linear.find_where_y_is_zero(curves), -1.5)
-    def test_exception(self):
-        curves: Curves = Curves(1,2,3)
-        with self.assertRaises(ValueError):
-            Bilinear.find_where_y_is_zero(curves)
+
+    # def test_Curves_inheritance(self):  # comment: I think this test is wired
+    #     curves: Curves = Curves(1,2,3)
+    #     self.assertEqual(Linear.find_where_y_is_zero(curves), -1.5)
+    # def test_exception(self):
+    #     curves: Curves = Curves(1,2,3)  # comment: I think this test is wired
+    #     with self.assertRaises(ValueError):
+    #         Bilinear.find_where_y_is_zero(curves)
+
+    def test_Linear_find_where_y_is_zero(self):
+        linear: Linear = Linear(1, 2, 3)
+        self.assertEqual(linear.find_where_y_is_zero(), -1.5)
+
+    def test_Linear_find_where_y_is_zero_error_all_x(self):
+        linear = Linear(1, 0, 0)
+        with self.assertRaisesRegex(ValueError, "y = 0 for all x"):
+            linear.find_where_y_is_zero()
+
+    def test_Linear_find_where_y_is_zero_error_no_solution(self):
+        linear = Linear(1, 0, 1)
+        with self.assertRaisesRegex(ValueError, "There is no solution."):
+            linear.find_where_y_is_zero()
+
+    def test_Linear_find_y_by_x(self):
+        linear: Linear = Linear(1, 2, 3)
+        self.assertEqual(linear.find_y_by_x(), 5)
+
+    def test_Bilinear_find_where_y_is_zero(self):
+        bilinear: Bilinear = Bilinear(1, -1, 4)
+        self.assertEqual(bilinear.find_where_y_is_zero(), 2)
+
+    def test_Bilinear_find_where_y_is_zero_error_all_x(self):
+        bilinear: Bilinear = Bilinear(1, 0, 0)
+        with self.assertRaisesRegex(ValueError, "y = 0 for all x"):
+            bilinear.find_where_y_is_zero()
+
+    def test_Bilinear_find_where_y_is_zero_error_no_solution(self):
+        bilinear: Bilinear = Bilinear(1, 0, 1)
+        with self.assertRaisesRegex(ValueError, "There is no solution."):
+            bilinear.find_where_y_is_zero()
+
+    def test_Bilinear_find_where_y_is_zero_error_no_root(self):
+        bilinear: Bilinear = Bilinear(1, 2, 3)
+        with self.assertRaisesRegex(ValueError, "There is no root in real number."):
+            bilinear.find_where_y_is_zero()
+
+    def test_Bilinear_find_y_by_x(self):
+        bilinear: Bilinear = Bilinear(2, 1, 3)
+        self.assertEqual(bilinear.find_y_by_x(), 7)
+
 
 class DataFrameTest(unittest.TestCase):
     def test_import_data(self):
@@ -81,7 +126,7 @@ class FunctionalProgrammingTests(unittest.TestCase):
         self.assertEqual(fp.find_sqrt(data['sqrt']['input_1']), data['sqrt']['output_1'], 'sqrt is not taken properly!')
         self.assertEqual(fp.find_sqrt(data['sqrt']['input_2']), data['sqrt']['output_2'], 'list of negative ints should return empty list!')
         with self.assertRaises(ValueError):
-            fp.sort_list(data['sqrt']['input_3'])
+            fp.find_sqrt(data['sqrt']['input_3'])
     def test_fibonacci_Generator(self):
         fp: Functional_Programming = Functional_Programming()
         fib_generator = fp.fibonacci_Generator()
